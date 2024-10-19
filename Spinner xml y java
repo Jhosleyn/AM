@@ -1,0 +1,185 @@
+//Codigo string.xml//**********************************************
+<resources>
+    <string name="app_name">mixtos</string>
+    <string-array name="paises">
+        <item>MEX</item>
+        <item>CAN</item>
+        <item>USA</item>
+    </string-array>
+</resources>
+
+//Codigo xml//*******************************************************
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/elije"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Elije una opción"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/Grupo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/elije">
+
+        <RadioButton
+            android:id="@+id/cmn"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:text="CMN"
+            android:textSize="20dp" />
+
+        <RadioButton
+            android:id="@+id/Eluniversal"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:text="El Universal"
+            android:textSize="20dp" />
+
+        <RadioButton
+            android:id="@+id/reforma"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:text="Reforma"
+            android:textSize="20dp" />
+
+    </RadioGroup>
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginTop="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Grupo" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+//Codigo Java//*******************************************************
+package com.example.mixtos;
+
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class MainActivity extends AppCompatActivity {
+
+    //Variables
+    RadioButton cmn, universal, reforma;
+    String url = "http://google.com";
+    Spinner spinner;
+    ArrayAdapter arrayAdapter;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        //Asociar el componente grafico con la clase//
+        cmn=findViewById(R.id.cmn);
+        universal=findViewById(R.id.Eluniversal);
+        reforma=findViewById(R.id.reforma);
+        spinner=findViewById(R.id.spinner);
+
+        arrayAdapter=ArrayAdapter.createFromResource(this, R.array.paises,
+                android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String seleccionado= adapterView.getItemAtPosition(i).toString().trim();
+                if (seleccionado.equals("MEX"))
+                {
+
+                }
+
+                Toast.makeText(MainActivity.this, seleccionado, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        cmn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isCheck) {
+                if (isCheck)
+                {
+                    //universal.setChecked(false); Deseleccionar la opcion seleccionada
+                    //reforma.setChecked(false);
+                  url="http://cmn.com";
+                  abrirGoogle();
+                }
+            }
+        });
+
+        universal.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isCheck) {
+                if (isCheck)
+                {
+                    url="http://eluniversal.com";
+                    abrirGoogle();
+                }
+            }
+        });
+
+        reforma.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isCheck) {
+                if (isCheck)
+                {
+                    url="http://reforma.com";
+                    abrirGoogle();
+                }
+            }
+        });
+    }
+
+    private void abrirGoogle()
+    {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
+
+    }
+}
