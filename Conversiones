@@ -1,5 +1,20 @@
-xml
+************************Codigo string**************************
+<resources>
+    <string name="app_name">Conversión de Longitud</string>
+    <string-array name="units">
+        <item>milímetros</item>
+        <item>centímetros</item>
+        <item>decímetros</item>
+        <item>metros</item>
+        <item>pulgadas</item>
+        <item>pies</item>
+        <item>yardas</item>
+        <item>millas</item>
+        <item>kilómetros</item>
+    </string-array>
+</resources>
 
+************************Codigo xml**************************
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -50,71 +65,208 @@ xml
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="44dp"
-        android:layout_marginTop="196dp"
+        android:layout_marginTop="212dp"
         android:text="A: "
         android:textSize="25sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <TextView
-        android:id="@+id/tvResult"
+        android:id="@+id/Resultado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="-35dp"
         android:text=""
         android:textSize="18sp"
-
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.389"
+        app:layout_constraintHorizontal_bias="0.343"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="196dp" />
+        app:layout_constraintTop_toBottomOf="@+id/spinner2" />
 
     <Spinner
         android:id="@+id/spinner2"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
+        android:layout_marginTop="32dp"
+        android:entries="@array/units"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.73"
+        app:layout_constraintHorizontal_bias="0.873"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="180dp" />
+        app:layout_constraintTop_toBottomOf="@+id/enviar" />
 
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-40dp"
+        android:entries="@array/units"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.843"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="116dp" />
+        app:layout_constraintTop_toBottomOf="@+id/enviar" />
 
     <Button
-        android:id="@+id/buttonConvert"
+        android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="220dp"
         android:text="Calcular"
-        android:textColorHint="@color/black"
-        tools:layout_editor_absoluteX="146dp"
-        tools:layout_editor_absoluteY="419dp" />
-
+        android:backgroundTint="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Resultado" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
-string
 
-<resources>
-    <string name="app_name">Conversión de Longitud</string>
-    <string-array name="units">
-        <item>milímetros</item>
-        <item>centímetros</item>
-        <item>decímetros</item>
-        <item>metros</item>
-        <item>pulgadas</item>
-        <item>pies</item>
-        <item>yardas</item>
-        <item>millas</item>
-        <item>kilómetros</item>
-    </string-array>
-</resources>
+************************Codigo java**************************
 
-***falta java
+package com.example.conversiones;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class MainActivity extends AppCompatActivity {
+
+    Spinner spinneruno, spinnerdos;
+    ArrayAdapter arrayAdapter;
+    Button boton;
+    EditText enviar;
+    TextView Resultado;
+    String[] units = {"milímetros", "centímetros", "decímetros", "metros", "pulgadas", "pies", "yardas", "millas", "kilómetros"};
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        spinneruno = findViewById(R.id.spinner);
+        spinnerdos = findViewById(R.id.spinner2);
+        enviar = findViewById(R.id.enviar);
+        Resultado = findViewById(R.id.Resultado);
+        boton = findViewById(R.id.button);
+        arrayAdapter = ArrayAdapter.createFromResource(this, R.array.units, android.R.layout.simple_spinner_dropdown_item);
+        spinneruno.setAdapter(arrayAdapter);
+
+
+        spinneruno.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String seleccionado = (String) adapterView.getItemAtPosition(i).toString().trim();
+                if (seleccionado.equals("cm")) {
+                }
+                Toast.makeText(MainActivity.this, "seleccionado", Toast.LENGTH_SHORT).show();
+            }
+
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+
+
+        });
+        spinnerdos.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String seleccionado2 = (String) adapterView.getItemAtPosition(i).toString().trim();
+                if (seleccionado2.equals("cm")) {
+                }
+                Toast.makeText(MainActivity.this, "seleccionado2", Toast.LENGTH_SHORT).show();
+            }
+
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        boton.setOnClickListener(new View.OnClickListener() {
+                                     @Override
+                                     public void onClick(View v) {
+                                         double envia = Double.parseDouble(enviar.getText().toString());
+                                         String sp1 = spinneruno.getSelectedItem().toString();
+                                         String sp2 = spinnerdos.getSelectedItem().toString();
+                                         double result = convert(envia, sp1, sp2);
+                                         Resultado.setText(String.format(" %.2f %s", result, sp2));
+                                     }
+
+
+                                     private double convert(double value, String sppineruno, String sppinerdos) {
+
+                                         double meters = 0;
+
+                                         switch (sppineruno) {
+                                             case "milímetros":
+                                                 meters = value / 1000;
+                                                 break;
+                                             case "centímetros":
+                                                 meters = value / 100;
+                                                 break;
+                                             case "decímetros":
+                                                 meters = value / 10;
+                                                 break;
+                                             case "metros":
+                                                 meters = value;
+                                                 break;
+                                             case "pulgadas":
+                                                 meters = value * 0.0254;
+                                                 break;
+                                             case "pies":
+                                                 meters = value * 0.3048;
+                                                 break;
+                                             case "yardas":
+                                                 meters = value * 0.9144;
+                                                 break;
+                                             case "millas":
+                                                 meters = value * 1609.34;
+                                                 break;
+                                             case "kilómetros":
+                                                 meters = value * 1000;
+                                                 break;
+                                         }
+
+                                         switch (sppinerdos) {
+                                             case "milímetros":
+                                                 return meters * 1000;
+                                             case "centímetros":
+                                                 return meters * 100;
+                                             case "decímetros":
+                                                 return meters * 10;
+                                             case "metros":
+                                                 return meters;
+                                             case "pulgadas":
+                                                 return meters / 0.0254;
+                                             case "pies":
+                                                 return meters / 0.3048;
+                                             case "yardas":
+                                                 return meters / 0.9144;
+                                             case "millas":
+                                                 return meters / 1609.34;
+                                             case "kilómetros":
+                                                 return meters / 1000;
+                                         }
+
+                                         return 0;
+                                     }
+                                 }
+
+
+        );
+    }
+}
