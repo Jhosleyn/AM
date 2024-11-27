@@ -1,0 +1,226 @@
+xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/titulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Sql Database"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/div1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="15dp"
+        android:background="@color/black"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titulo" />
+
+    <EditText
+        android:id="@+id/nombre"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="25dp"
+        android:hint="Nombre"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/div1" />
+
+    <EditText
+        android:id="@+id/mat"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="25dp"
+        android:hint="Matricula"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nombre" />
+
+    <Button
+        android:id="@+id/btninserta"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/black"
+        android:text="INSERTAR"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/mat"
+        app:layout_constraintStart_toStartOf="parent"/>
+    <Button
+        android:id="@+id/btnvista"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/black"
+        android:text="VISTA DB"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/mat"
+        app:layout_constraintStart_toEndOf="@id/btninserta"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+Javaaa Main
+
+package com.example.sql2;
+
+import android.content.Intent;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class MainActivity extends AppCompatActivity {
+
+    EditText nombre, matricula;
+    Button inserta, vista;
+    DBH dbh;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+
+        dbh = new DBH(this);
+        nombre=findViewById(R.id.nombre);
+        matricula= findViewById(R.id.mat);
+        inserta=findViewById(R.id.btninserta);
+        vista=findViewById(R.id.btnvista);
+
+        vista.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //startActivity(new Intent(MainActivity.this,vista.clase));
+                mostrar(dbh.obtenInfo());
+            }
+        });
+
+        inserta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String n= nombre.getText().toString();
+                String m= matricula.getText().toString();
+                dbh.inserta(n, m);
+                nombre.setText("");
+                matricula.setText("");
+            }
+        });
+    }
+
+    private void mostrar(Cursor cursor)
+    {
+        while (cursor.moveToNext())
+        {
+            Log.i(cursor.getString(1), cursor.getString(2));
+        }
+    }
+}
+
+
+
+DBH Java
+
+
+
+package com.example.sql2;
+
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import androidx.annotation.Nullable;
+
+public class DBH
+{
+    private SQLiteDatabase db;
+    //Constantes de la tabla
+    public static final String TABLE_ROW_ID = "_id";
+    public static final String TABLE_ROW_NOMBRE = "nombre";
+    public static final String TABLE_ROW_MATRICULA ="matricula";
+
+    private static final String DB_NAME ="contactosdb";
+    private static final String TABLE_NAME ="Alumnos";
+
+    public DBH (Context context)
+    {
+        CustomSQLiteOpenHelper helper= new CustomSQLiteOpenHelper(context);
+        db=helper.getWritableDatabase();
+    }
+
+    public void inserta(String nombre, String matricula)
+    {
+        String qry="INSERT INTO" + TABLE_NAME + " (" +
+                TABLE_ROW_NOMBRE + ", " + TABLE_ROW_MATRICULA + ") " +
+                "VALUES (" +
+                "'" + nombre + "'"+ ", " +
+                "'" + matricula + "'" +
+                "); ";
+        Log.i("inserta() = ", qry);
+
+        db.execSQL(qry);
+
+
+    }
+
+    public Cursor obtenInfo()
+    {
+        Cursor c= db.rawQuery("SELECT *" + "from " +
+                TABLE_NAME, null);
+        return c;
+    }
+
+    private class CustomSQLiteOpenHelper extends SQLiteOpenHelper {
+        public CustomSQLiteOpenHelper(@Nullable Context context) {
+            super(context, DB_NAME, null, 1);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase sqLiteDatabase)
+        {
+            String qryNuevaTabla = "create table"
+                    + TABLE_NAME + " ("
+                    + TABLE_ROW_ID
+                    + " integer primary key autoincrement not null,"
+                    + TABLE_ROW_NOMBRE
+                    + " text not null,"
+                    + TABLE_ROW_MATRICULA
+                    + " text not null");";
+
+                db.execSQL(qryNuevaTabla);
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+
+        }
+    }
+
+}
